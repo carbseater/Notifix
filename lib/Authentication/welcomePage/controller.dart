@@ -1,39 +1,9 @@
-
-import 'package:appnewui/Authentication/adminlogin/adminlogin.dart';
 import 'package:appnewui/Authentication/signup/signup.dart';
 import 'package:appnewui/indexPage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:appnewui/Authentication/welcomePage/welcome.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
-// class Controller extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         body: StreamBuilder(
-//           stream: FirebaseAuth.instance.authStateChanges(),
-//           builder: (context, snapshot) {
-//             if (snapshot.connectionState == ConnectionState.waiting) {
-//               return Scaffold(
-//                 body: Center(
-//                   child: CircularProgressIndicator(),
-//                 ),
-//               );
-//             } else if (snapshot.hasData) {
-//               print("Controller: Logged in");
-//               return AdminLogin();
-//
-//             } else {
-//               print("Controller: Logged out ");
-//               return WelcomePage();
-//             }
-//           },
-//         ));
-//   }
-//
-//
-// }
 class Controller extends StatefulWidget {
   const Controller({Key? key}) : super(key: key);
 
@@ -42,15 +12,25 @@ class Controller extends StatefulWidget {
 }
 
 class _ControllerState extends State<Controller> {
-  late final user;
+  bool user = false;
   @override
   Widget build(BuildContext context) {
-    return user!=null ? IndexPage():SignupPage();
+    return user ? IndexPage():SignupPage();
   }
 
   @override
   void initState() {
-    user = FirebaseAuth.instance.currentUser;
+    super.initState();
+    check_if_already_login();
+  }
+
+  void check_if_already_login() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if(prefs.containsKey('verified')){
+      setState(() {
+        user = true;
+      });
+    }
   }
   //helloi
 }
