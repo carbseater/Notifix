@@ -1,4 +1,5 @@
 import 'package:appnewui/Authentication/Auth/firebase.dart';
+import 'package:appnewui/Authentication/signup/signup.dart';
 import 'package:appnewui/constrants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
 import "string_extension.dart";
 import 'package:provider/provider.dart';
@@ -142,15 +144,18 @@ class _ProfilePageState extends State<ProfilePage> {
                             onPressed: () async {
                               print("Logged out clicked");
                               try {
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                                prefs.clear();
                                 final provider =
                                     Provider.of<GoogleSignInProvider>(context,
                                         listen: false);
                                 await provider.signOutGoogle();
-                                // Navigator.of(context).pushAndRemoveUntil(
-                                //     MaterialPageRoute(builder: (context) => WelcomePage()),
-                                //         (Route<dynamic> route) => false);
-                                SystemChannels.platform
-                                    .invokeMethod('SystemNavigator.pop');
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(builder: (context) => SignupPage()),
+                                        (Route<dynamic> route) => false);
+                                // SystemChannels.platform
+                                //     .invokeMethod('SystemNavigator.pop');
                                 // Navigator.push(context,MaterialPageRoute(builder: (context)=>Controller()));
 
                               } catch (e) {

@@ -1,3 +1,4 @@
+import 'package:appnewui/Authentication/signup/signup.dart';
 import 'package:appnewui/Authentication/welcomePage/welcome.dart';
 import 'package:appnewui/Pages/settingsPageItems/buttons.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:appnewui/Authentication/Auth/firebase.dart';
 import 'package:appnewui/Authentication/welcomePage/controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -75,13 +77,17 @@ class _SettingsPageState extends State<SettingsPage> {
                 ontap: () async {
                   print("Logged out clicked");
                   try {
-                    final provider = Provider.of<GoogleSignInProvider>(context,
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                    prefs.clear();
+                    final provider =
+                    Provider.of<GoogleSignInProvider>(context,
                         listen: false);
                     await provider.signOutGoogle();
-                    // Navigator.of(context).pushAndRemoveUntil(
-                    //     MaterialPageRoute(builder: (context) => WelcomePage()),
-                    //         (Route<dynamic> route) => false);
-                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => SignupPage()),
+                            (Route<dynamic> route) => false);
+                    // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
                     // Navigator.push(context,MaterialPageRoute(builder: (context)=>Controller()));
 
                   } catch (e) {
